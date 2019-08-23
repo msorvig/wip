@@ -1,0 +1,131 @@
+<head>
+  <meta charset="utf-8">
+  <title>Multicanvas Qt</title>
+</head>
+
+<body unselectable="on">
+    <div id="appcontrol" style="width = 100%; height: 40px;">App Control:</div>
+    <div id="rafdebug" style="position: absolute;  bottom: 30; width = 100%; height: 30px;">RAF Control:</div>
+    <div id="timerdebug" style="position: absolute;  bottom: 0; width = 100%; height: 30px;">Timer Control:</div>
+
+    <script type="text/javascript" src="qtloader.js"></script>
+    <script type="text/javascript" src="qwm.js"></script>
+    <script type="text/javascript" src="qrafdebug.js"></script>
+    <script type="text/javascript" src="qtimerdebug.js"></script>
+    <script type="text/javascript" src="qwebui.js"></script>
+    <script type="text/javascript">
+
+        // Application/example code
+        var initialWindows = [];
+        var windowCascade = 50;
+        var windowIndex = 0;
+        var createWindowButton = undefined;
+        var qtLoader = undefined;
+
+        function init()
+        {
+            // Set up Application Control
+            let appcontrolelement = document.querySelector("#appcontrol");
+            let createApplicationButton = qwebui_button(appcontrolelement, "Create Application", () => {
+                createApplicationButton.setEnabled(false);
+                createApplication();
+            });
+            createWindowButton = qwebui_button(appcontrolelement, "Create Window", createAdditinalWindow);
+            createWindowButton.setEnabled(false);
+
+            // Set up RequestAnimationFrame Control
+            qrafdebug_interpose();
+            let rafdebugelement = document.querySelector("#rafdebug");
+            qwebui_checkbox(rafdebugelement, "run", true, (checked) => {
+                qrafdebug_setRunning(checked);
+                rafdebugstep.setEnabled(!checked);
+            });
+            let rafdebugstep = qwebui_button(rafdebugelement, "step", qrafdebug_step);
+            rafdebugstep.setEnabled(false);
+            let label = qwebui_label(rafdebugelement, "");
+            qrafdebug_setPendingRequestCallback((pending) => label.setText(pending ? "frame requested" : ""))
+
+            // Set up TimerDebug Control
+            qtimerdebug_interpose();
+            let timerdebugelement = document.querySelector("#timerdebug");
+            qwebui_checkbox(timerdebugelement, "run", true, (checked) => {
+                qtimerdebug_setRunning(checked);
+                timerdebugstep.setEnabled(!checked);
+                timerdebugstepall.setEnabled(!checked);
+            });
+            let timerdebugstep = qwebui_button(timerdebugelement, "step", qtimerdebug_step);
+            timerdebugstep.setEnabled(false);
+            let timerdebugstepall = qwebui_button(timerdebugelement, "step all", qtimerdebug_stepAll);
+            timerdebugstepall.setEnabled(false);
+
+            let timersLabel = qwebui_label(timerdebugelement, "Timer Ticks: 0 Active Timers []");
+            // let intervalsLabel = qwebui_label(timerdebugelement, "Active Intervals []");
+            qtimerdebug_setActiveTimersChangedCallback((ticks, timers, intervals) => {
+                timersLabel.setText("Timer Ticks: " + ticks + " Active Timers [" + timers.join(", ") + "]");
+            });
+
+        }
+
+        function createApplication()
+        {
+            // Create 1 inital window
+            initialWindows = [createNumberedWindow(1, 50, 50)];
+            windowIndex = 2;
+
+            // load Qt
+            loadQt();
+        }
+
+        function loadQt()
+        {
+            qtloader = QtLoader({
+                canvasElements: initialWindows.map(function(window) { console.log(window.content); return window.content }),
+                showError: function(errorText) {
+                    console.log("error " + errorText);
+                },
+                showCanvas: qtReady
+            });
+            qtloader.loadEmscriptenModule("multicanvas");
+        }
+
+        function qtReady()
+        {
+            console.log("qtReady");
+            createWindowButton.setEnabled(true);
+            initialWindows.map(function(window) { window.visible = true });
+        }
+
+        // Creates a <canvas> which usess 100% of the available size.
+        function createCanvas(i) {
+            var canvas = document.createElement("canvas");
+            canvas.id = "QtCanvas" + i;
+            canvas.style.width = "100%";
+            canvas.style.height = "100%";
+            return canvas;
+        }
+
+        function createNumberedWindow(number, x, y, )
+        {
+            var window = new Window(x, y);
+            window.title = "Canvas / QScreen " + number;
+            window.content = createCanvas(number);
+            window.onClose(() => qtloader.removeCanvasElement(window.content));
+            window.onResize(() => qtloader.resizeCanvasElement(window.content));
+            return window;
+        }
+
+        function createAdditinalWindow()
+        {
+            console.log("createAdditinalWindow");
+            var window = createNumberedWindow(windowIndex, 10 + windowCascade, 10 + windowCascade);
+            qtloader.addCanvasElement(window.content);
+            window.visible = true;
+
+            windowCascade += 25;
+            windowIndex += 1;
+        }
+
+        document.addEventListener("DOMContentLoaded", init);
+    </script>
+</body>
+</html>
