@@ -5,14 +5,15 @@
 //    qtQuick = new QtQuick({
 //        container: some_container_element
 //        onStatusChange: function(runState) {
-//    },
+//            console.log(status)
+//        },
 //        onWarning: function(warning) {
-//            // Log warnings as well
-//            log.innerHTML += ("QML Warning: " + warning + "\n")
-//    }});
-//.
-//.   qtQuick.setSourceCode(qmlcode);
-//.   g_qtQuick.load();
+//            console.log(status)
+//        }
+//    });
+// 
+//    qtQuick.setSourceCode(qmlcode);
+//    qtQuick.load();
 //
 
 function QtQuick(config)
