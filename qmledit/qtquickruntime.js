@@ -594,8 +594,8 @@ var wasmMemory;
 // In the wasm backend, we polyfill the WebAssembly object,
 // so this creates a (non-native-wasm) table for us.
 var wasmTable = new WebAssembly.Table({
-  'initial': 45910,
-  'maximum': 45910 + 0,
+  'initial': 45911,
+  'maximum': 45911 + 0,
   'element': 'anyfunc'
 });
 
@@ -1191,11 +1191,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 17560752,
+    STACK_BASE = 17560944,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 12317872,
-    DYNAMIC_BASE = 17560752,
-    DYNAMICTOP_PTR = 12317696;
+    STACK_MAX = 12318064,
+    DYNAMIC_BASE = 17560944,
+    DYNAMICTOP_PTR = 12317888;
 
 
 
@@ -1621,7 +1621,7 @@ var ASM_CONSTS = {
 
 
 
-// STATICTOP = STATIC_BASE + 12316848;
+// STATICTOP = STATIC_BASE + 12317040;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -9102,7 +9102,7 @@ var ASM_CONSTS = {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 12317696;
+      return 12317888;
     }
 
   
@@ -13429,7 +13429,7 @@ var ASM_CONSTS = {
   }
   
   
-  var _fetch_work_queue=12317856;function __emscripten_get_fetch_work_queue() {
+  var _fetch_work_queue=12318048;function __emscripten_get_fetch_work_queue() {
       return _fetch_work_queue;
     }function _emscripten_start_fetch(fetch, successcb, errorcb, progresscb, readystatechangecb) {
     if (typeof noExitRuntime !== 'undefined') noExitRuntime = true; // If we are the main Emscripten runtime, we should not be closing down.
@@ -14035,7 +14035,7 @@ var ASM_CONSTS = {
   function _glViewport(x0, x1, x2, x3) { GLctx['viewport'](x0, x1, x2, x3) }
 
   
-  var ___tm_timezone=(stringToUTF8("GMT", 12317760, 4), 12317760);function _gmtime_r(time, tmPtr) {
+  var ___tm_timezone=(stringToUTF8("GMT", 12317952, 4), 12317952);function _gmtime_r(time, tmPtr) {
       var date = new Date(HEAP32[((time)>>2)]*1000);
       HEAP32[((tmPtr)>>2)]=date.getUTCSeconds();
       HEAP32[(((tmPtr)+(4))>>2)]=date.getUTCMinutes();
@@ -14063,7 +14063,7 @@ var ASM_CONSTS = {
     }
 
   
-  var ___tm_current=12317712;
+  var ___tm_current=12317904;
   
   
   function _tzset() {

@@ -70,7 +70,6 @@ function QtQuick(config)
             this._quickRuntime.qmlSourceUrl = this._sourceUrl;
     }
 
-
     this.RunState = {
         Created : 1,
         Loading : 2,
@@ -115,9 +114,11 @@ function QtQuick(config)
         this._sourceCode = undefined;
         this._updateSourceCode();
     }
+
     this.setContainer = function(element) {
         this._container = element;
     }
+
     this.setPlaceHolder = function(element) {
         this._placeholder = element;
     }
@@ -140,7 +141,7 @@ function QtQuick(config)
         }
         this._container.appendChild(this._placeholder);
 
-        _qtLoader = QtLoader({
+        this._qtLoader = QtLoader({
             canvasElements: [this._canvas],
             showLoader: function(loaderStatus) {
                 console.log("showLoader");
@@ -168,7 +169,11 @@ function QtQuick(config)
                 this._canvas.style.display = 'block';
             }.bind(this),
         });
-        _qtLoader.loadEmscriptenModule("qtquickruntime");
+        this._qtLoader.loadEmscriptenModule("qtquickruntime");
+    }
+
+    this.resizeCanvas = function() {
+        this._qtloader.resizeCanvasElement(this._canvas);
     }
 
     this.delete = function() {
